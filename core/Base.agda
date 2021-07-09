@@ -72,7 +72,8 @@ module core.Base where
   --
   --  Equality
   --
-  
+
+  infix 20 _≡_
   data _≡_ {ℓ} {A : Set ℓ} (a : A) : A → Set ℓ where
     refl : a ≡ a
 
@@ -95,11 +96,20 @@ module core.Base where
     → (y : Y) → X → Y
   cst y _ = y
 
-  infixr 20 _∘_
+  infixr 30 _∘_
   
   _∘_ : ∀ {ℓ₀ ℓ₁ ℓ₂} {X : Set ℓ₀} {Y : Set ℓ₁} {Z : Set ℓ₂}
     → (f : Y → Z) (g : X → Y) → X → Z
   (f ∘ g) x = f (g x)
+
+  -- (Un)curryfication
+  curry : ∀ {i j k} {A : Type i} {B : A → Type j} {C : Σ A B → Type k}
+    → (∀ s → C s) → (∀ x y → C (x , y))
+  curry f x y = f (x , y)
+
+  uncurry : ∀ {i j k} {A : Type i} {B : A → Type j} {C : ∀ x → B x → Type k}
+    → (∀ x y → C x y) → (∀ s → C (fst s) (snd s))
+  uncurry f (x , y) = f x y
 
   infixr 50 _∼_
   

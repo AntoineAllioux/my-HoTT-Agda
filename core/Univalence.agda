@@ -1,18 +1,17 @@
 {-# OPTIONS --without-K --allow-unsolved-metas --rewriting #-}
 
-module HoTT.Univalence where
+module core.Univalence where
 
-open import HoTT.Base
-open import HoTT.Path
-open import HoTT.Homotopy
-open import HoTT.Equivalence
+open import core.Base
+open import core.Path
+open import core.Equivalence
 
 module _ {i} {A B : Type i} where
 
   postulate univalence : is-equiv (id-to-equiv {i} {A} {B})
 
   ue : (A ≡ B) ≃ (A ≃ B)
-  ue = equiv univalence
+  ue = equiv-of univalence
 
   ua : (A ≃ B) → (A ≡ B)
   ua = ≃← ue
@@ -61,10 +60,10 @@ ua-is-equiv = snd (≃-sym ue)
 postulate function-extensionality : ∀ {i j} {A : Type i} {B : A → Type j} → (f g : (x : A) → B x) → is-equiv (happly {f = f} {g = g})
 
 funext : ∀ {i j} {A : Type i} {B : A → Type j} → {f g : (x : A) → B x} → ((x : A) → f x ≡ g x) → f ≡ g
-funext {f = f} {g = g} = ≃← (equiv (function-extensionality f g))
+funext {f = f} {g = g} = ≃← (equiv-of (function-extensionality f g))
 
 funext-comp : ∀ {i j} {A : Type i} {B : A → Type j} → {f g : (x : A) → B x} (h : (x : A) → f x ≡ g x) (x : A) → happly (funext h) x ≡ h x
-funext-comp {f = f} {g = g} h x = happly (≃ε (equiv (function-extensionality f g)) h) x
+funext-comp {f = f} {g = g} h x = happly (≃ε (equiv-of (function-extensionality f g)) h) x
 
 funext2 : ∀ {i j k} {A : Type i} {B : A → Type j} {C : (a : A) → B a → Type k} → {f g : (a : A) (b : B a) → C a b} → ((a : A) (b : B a) → f a b ≡ g a b) → f ≡ g
 funext2 p = funext (λ a → funext (λ b → p a b))
